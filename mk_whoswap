@@ -1,0 +1,31 @@
+#!/bin/bash
+# @andrea 2015
+
+if type mktemp >/dev/null
+     then
+	TMP=`mktemp`
+        ps ax -o "pid=,cmd=" | sed "s/^ *//" > $TMP
+        extended_info="\n"
+        allpid=0
+	allswap=0
+        for pid in $(grep ^[0-9] $TMP | awk '{print $1}')
+		do
+			procname=$(cat $TMP | grep -w ^$pid | cut -d' ' -f2- )
+			if [ -f /proc/$pid/smaps ]; then
+				swapusage=$(grep Swap /proc/$pid/smaps |grep -v '\W0 kB' |tr -d ' ' | cut -d: -f2 | awk '{print $1}' | awk '{
+        				ex = index("KMG", substr($1, length($1)))
+            				val = substr($1, 0, length($1) - 1)
+                		    	prod = val * 10^(ex * 3)
+                    		    	sum += prod
+					}
+                        		END {print sum}')
+                    	fi
+			if [ ! -z $swapusage  ]; then 
+				extended_info="${extended_info} Pid: $pid - Swap: $swapusage kB - Process: $procname \n"
+				allpid=$(expr $allpid + 1)
+				allswap=$(expr $allswap + $swapusage)
+			fi
+		done
+        echo "0 WhoSwap - OK - $allpid processes using swap for a total of $allswap kB (click on Service name for details) $extended_info"
+        rm -f $TMP
+fi
