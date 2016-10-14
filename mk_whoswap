@@ -1,5 +1,5 @@
 #!/bin/bash
-# @andrea 2016
+# @zionio 2016
 
 if type mktemp >/dev/null
      then
