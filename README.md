@@ -9,7 +9,7 @@ Simple Check_MK check to view who's using swap with Long output 'multiline'.
 ### Check_MK CRE (check-mk-raw)
 
 Download `custom/gitlab_runner/lib/local/whoswap` and copy
-to `/usr/lib/check_mk_agent/plugins/` directory.
+to `/usr/lib/check_mk_agent/local/` directory.
 
 ### Check_MK CEE (check-mk-enterprise)
 
